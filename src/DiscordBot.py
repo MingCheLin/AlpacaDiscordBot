@@ -11,6 +11,8 @@ class AlpacaBot(discord.Client):
     ## initialize
     def __init__(self, AI_name = 'A', intents = None):
         super().__init__(intents)
+        # set token
+        self.token = token
         # set mutex
         self._pool = concurrent.futures.ThreadPoolExecutor()
         self.lock = threading.Lock()
@@ -55,4 +57,4 @@ if __name__ == "__main__":
     intents.message_content = True
 
     client = AlpacaBot(AI_name = 'A', intents=intents)
-    client.run()
+    client.run(token)
