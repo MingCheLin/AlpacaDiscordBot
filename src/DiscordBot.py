@@ -11,8 +11,6 @@ class AlpacaBot(discord.Client):
     ## initialize
     def __init__(self, AI_name = 'A', intents = None):
         super().__init__(intents)
-        # set token
-        self.token = token
         # set mutex
         self._pool = concurrent.futures.ThreadPoolExecutor()
         self.lock = threading.Lock()
@@ -53,6 +51,7 @@ class AlpacaBot(discord.Client):
         ChatDatabase.update_chat_history(message.channel, user_message + res)
 
 if __name__ == "__main__":
+    token = 
     intents = discord.Intents.default()
     intents.message_content = True
 

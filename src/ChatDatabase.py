@@ -24,7 +24,7 @@ def update_chat_history(channel_id: str, prompt: str):
 
 # reset the chat history of certain channel
 def reset(channel_id: str):
-    update_chat_history(channel_id, None)
+    update_chat_history(channel_id, "")
     return
 
 
