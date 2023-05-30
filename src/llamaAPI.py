@@ -30,4 +30,6 @@ class Alpaca():
 if __name__ == "__main__":
     print("testing...")
     alpaca = Alpaca(model_path="./src/models/ggml-model-q4_0.bin")
-    alpaca.eval(input(), 'A', 'Q')
+    prompt = input()
+    res = alpaca.eval(f"Q: {prompt} A: ", 'A', 'Q')
+    print(res)
