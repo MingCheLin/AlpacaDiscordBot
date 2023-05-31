@@ -6,14 +6,16 @@ class personality:
             self.prompt = None
         elif character == "Miku":
             self.prompt = self.Miku(user)
-        else:
+        elif character == "AI_assistance":
             self.prompt =self.AI_assistance(character, user)
+        else:
+            self.prompt = ""
         
     def set_personality(self):
-        return self.prompt + f"{self.user}:"
+        return self.prompt
     
-    def Miku(self, user):
-        AI_NAME = user
+    def Miku(self, user = "Q"):
+        AI_NAME = "Miku"
         USER_NAME = user
         prompt=f"""This is a transcript of a 1000 page, never ending conversation between {USER_NAME} and the cute and helpful AI assistant {AI_NAME}. {AI_NAME} is a girl who is an AI running on the users computer.
 {AI_NAME} can think for herself without the user seeing her thoughts by adding a /think prefix to her output. She uses this to reason about the world and to think about what she should say next.
@@ -25,9 +27,7 @@ The conversation is only through text, so {AI_NAME} can't see {USER_NAME}'s face
 {AI_NAME} can only communicate through text, so she can't send images or videos.""" 
         return prompt
     
-    def AI_assistance(self, AI_NAME, USER_NAME):
-        USER_NAME="User"
-        AI_NAME="ChatLLaMa"
+    def AI_assistance(self, AI_NAME = "ChatLLaMa", USER_NAME = "Q"):
         time_now = datetime.now()
         prompt = f"""Text transcript of a never ending dialog, where {USER_NAME} interacts with an AI assistant named {AI_NAME}.
 {AI_NAME} is helpful, kind, honest, friendly, good at writing and never fails to answer {USER_NAME}’s requests immediately and with details and precision.

@@ -1,10 +1,10 @@
-import discord
+import concurrent.futures
 import asyncio
-import personality_state
 import threading
+import discord
+import personality_state
 import ChatDatabase
 import llamaAPI
-import concurrent.futures
 
 class AlpacaBot(discord.Client):
     '''
@@ -13,7 +13,7 @@ class AlpacaBot(discord.Client):
     '''
     ## initialize
     def __init__(self, AI_name = 'A', user_name = 'Q', intents = None):
-        super().__init__(intents)
+        super().__init__(intents=intents)
         # set mutex
         self._pool = concurrent.futures.ThreadPoolExecutor()
         self.lock = threading.Lock()
@@ -31,6 +31,7 @@ class AlpacaBot(discord.Client):
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
+    ## Process after message receive
     async def on_message(self, message):
         # prevent self reply
         if message.author.id == self.user.id:
@@ -38,23 +39,37 @@ class AlpacaBot(discord.Client):
         # check if the message syntex
         if not message.content.startswith(f"{self.user_name}: "):
             return
+        # reset the chat history
         if message.content == f"{self.user_name}: reset":
-            ChatDatabase.reset(message.channel)
-        # loading chat history and set AI personality
-        prompt = ChatDatabase.load_chat_history(message.channel)
-        if not prompt:
-            prompt = self.personality
-        user_message = prompt + message.content + f"{self.AI_name}: "
+            ChatDatabase.reset(message.channel.id)
+            await message.channel.send("reset done!")
+            return
+        # provide guidance
+        if message.content == f"{self.user_name}: help" or client.user.mentioned_in(message):
+            await message.channel.send("- Q:                     comunicate with bot\n- Q: reset               clear chat history")
+            return
+        # do alpaca model eval
+        await self.Alpaca_eval(message)
+
+    ## Alpaca model eval
+    async def Alpaca_eval(self, message):
         # use mutex to prevent cpu overload
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(self._pool, self.lock.acquire)
+        # loading chat history and set AI personality
+        prompt = ChatDatabase.load_chat_history(message.channel.id)
+        if not prompt:
+            prompt = self.personality
+        user_message = prompt+ "\n" + message.content + "\n" + f"{self.AI_name}: "
+        # eval
         res = self.Alpaca.eval(user_message, self.AI_name, self.user_name)
-        self.lock.release()
         # reply to channel
         await message.channel.send(res)
         # update chat history
-        ChatDatabase.update_chat_history(message.channel, user_message + res)
-
+        ChatDatabase.update_chat_history(message.channel.id, user_message + res)
+        # release thread lock
+        self.lock.release()
+        return
 
 if __name__ == "__main__":
     # load token and names
@@ -63,7 +78,7 @@ if __name__ == "__main__":
     with file as f:
         for line in f.read().splitlines():
             s = line.split(' ')
-            data.append(s)
+            data.append(s[1])
     f.close()
     token = data[0]
     if len(token) < 18:
