@@ -45,8 +45,8 @@ class AlpacaBot(discord.Client):
             await message.channel.send("reset done!")
             return
         # provide guidance
-        if message.content == f"{self.user_name}: help" or client.user.mentioned_in(message):
-            await message.channel.send(f"- {self.AI_name}:                     comunicate with bot\n- {self.AI_name}: reset               clear chat history")
+        if message.content == f"{self.user_name}: help":
+            await message.channel.send(f"- {self.user_name}:                     comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
         await self.Alpaca_eval(message)
@@ -85,7 +85,9 @@ if __name__ == "__main__":
         raise ValueError("token unvalid")
     AI_name = data[1] if data[1] else 'A'
     user_name = data[2] if data[2] else 'Q'
-    model_path = data[3]
+    model_path = data[3] 
+    if not model_path:
+        raise ValueError("model path unvalid")
     # set bot permission
     intents_test = discord.Intents.default()
     intents_test.message_content = True
