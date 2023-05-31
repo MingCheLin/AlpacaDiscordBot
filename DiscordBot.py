@@ -1,18 +1,10 @@
 import concurrent.futures
 import asyncio
-import functools
-import typing
 import threading
 import discord
 import personality_state
 import ChatDatabase
 import llamaAPI
-
-def to_thread(func: typing.Callable) -> typing.Coroutine:
-    @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
-        return await asyncio.to_thread(func, *args, **kwargs)
-    return wrapper
 
 class AlpacaBot(discord.Client):
     '''
@@ -57,15 +49,14 @@ class AlpacaBot(discord.Client):
             await message.channel.send(f"- {self.user_name}:                       comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
-        await self.Alpaca_eval(message)
+        task = asyncio.create_task(self.Alpaca_eval(message))
+        await asyncio.gather(task)
         return
-
+    
     ## Alpaca model eval
-    @to_thread
     async def Alpaca_eval(self, message):
         # use mutex to prevent cpu overload
-        loop = asyncio.get_event_loop()
-        await loop.run_in_executor(self._pool, self.lock.acquire)
+        await asyncio.to_thread(self.lock.acquire)
         # loading chat history and set AI personality
         prompt = ChatDatabase.load_chat_history(message.channel.id)
         if not prompt:
