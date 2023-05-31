@@ -31,7 +31,7 @@ class Alpaca():
         '''
         self.model_path = model_path
         if not n_threads:
-            n_threads = max(cpu_count()//2, 1)
+            n_threads = max(cpu_count()-1, 1)
         self.n_ctx = n_ctx
         self.alpaca = Llama(model_path=self.model_path, 
                             n_ctx = self.n_ctx, 
