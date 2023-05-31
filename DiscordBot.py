@@ -1,10 +1,18 @@
 import concurrent.futures
 import asyncio
+import functools
+import typing
 import threading
 import discord
 import personality_state
 import ChatDatabase
 import llamaAPI
+
+def to_thread(func: typing.Callable) -> typing.Coroutine:
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        return await asyncio.to_thread(func, *args, **kwargs)
+    return wrapper
 
 class AlpacaBot(discord.Client):
     '''
@@ -46,12 +54,14 @@ class AlpacaBot(discord.Client):
             return
         # provide guidance
         if message.content == f"{self.user_name}: help":
-            await message.channel.send(f"- {self.user_name}:                     comunicate with bot\n- {self.user_name}: reset               clear chat history")
+            await message.channel.send(f"- {self.user_name}:                       comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
         await self.Alpaca_eval(message)
+        return
 
     ## Alpaca model eval
+    @to_thread
     async def Alpaca_eval(self, message):
         # use mutex to prevent cpu overload
         loop = asyncio.get_event_loop()
@@ -70,7 +80,7 @@ class AlpacaBot(discord.Client):
         # release thread lock
         self.lock.release()
         return
-
+    
 if __name__ == "__main__":
     # load token and names
     file = open('./token.txt', 'r', encoding='UTF-8')
