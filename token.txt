@@ -1,3 +1,4 @@
 token: PUT_YOUR_TOKEN_HERE
 AI_name: PUT_YOUR_AI_NAME_HERE
 user_name: PUT_YOUR_USER_NAME_HERE
+model_path: MODEL_PATH

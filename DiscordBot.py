@@ -12,7 +12,7 @@ class AlpacaBot(discord.Client):
     used to set the discord bot and connect to Alpaca model and chat history database
     '''
     ## initialize
-    def __init__(self, AI_name = 'A', user_name = 'Q', intents = None):
+    def __init__(self, AI_name = 'A', user_name = 'Q', intents = None, model_path = "./src/models/model.bin"):
         super().__init__(intents=intents)
         # set mutex
         self._pool = concurrent.futures.ThreadPoolExecutor()
@@ -23,7 +23,7 @@ class AlpacaBot(discord.Client):
         personality = personality_state.personality(self.AI_name, self.user_name)
         self.personality = personality.set_personality()
         # set alpaca model
-        self.Alpaca = llamaAPI.Alpaca()
+        self.Alpaca = llamaAPI.Alpaca(model_path = model_path)
 
 
     ## bot login
@@ -46,7 +46,7 @@ class AlpacaBot(discord.Client):
             return
         # provide guidance
         if message.content == f"{self.user_name}: help" or client.user.mentioned_in(message):
-            await message.channel.send("- Q:                     comunicate with bot\n- Q: reset               clear chat history")
+            await message.channel.send(f"- {self.AI_name}:                     comunicate with bot\n- {self.AI_name}: reset               clear chat history")
             return
         # do alpaca model eval
         await self.Alpaca_eval(message)
@@ -85,9 +85,10 @@ if __name__ == "__main__":
         raise ValueError("token unvalid")
     AI_name = data[1] if data[1] else 'A'
     user_name = data[2] if data[2] else 'Q'
+    model_path = data[3]
     # set bot permission
     intents_test = discord.Intents.default()
     intents_test.message_content = True
     # run the bot
-    client = AlpacaBot(AI_name = AI_name, user_name = user_name, intents = intents_test)
+    client = AlpacaBot(AI_name = AI_name, user_name = user_name, intents = intents_test, model_path = model_path)
     client.run(token)

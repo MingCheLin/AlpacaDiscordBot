@@ -5,7 +5,7 @@ from llama_cpp import Llama
 class Alpaca():
 
     def __init__(self, 
-                 model_path: str = "./drive/MyDrive/ggml-model-q4_0.bin", 
+                 model_path: str = "./src/models/ggml-model-q4_0.bin", 
                  n_ctx: int = 512,
                  n_parts: int = -1,
                  n_gpu_layers: int = 0,
