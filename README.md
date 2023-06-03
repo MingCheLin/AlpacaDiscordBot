@@ -7,6 +7,7 @@ And for chinese user, [Chinese-LLaMA-Alpaca](https://github.com/ymcui/Chinese-LL
 Alpaca is a LLM(large language model) that fine-tuned from the LLaMA 7B model by [Stanford Center for Research on Foundation Models](https://crfm.stanford.edu/2023/03/13/alpaca.html).  
 
 ## Usage
+colab demo : [Colab-Alpaca discord bot](https://colab.research.google.com/drive/1nJ4zANIWGFxlwLGM48eKBX1J3-WxE3qv#scrollTo=m4yROU_zowqb)
 ### 1. Install discord.py and llama-cpp-python
 ``pip install llama-cpp-python discord.py``  
 ### 2. Get alpaca model
