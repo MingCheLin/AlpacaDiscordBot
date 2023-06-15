@@ -1,4 +1,3 @@
-import concurrent.futures
 import asyncio
 import threading
 import discord
@@ -12,11 +11,10 @@ class AlpacaBot(discord.Client):
     used to set the discord bot and connect to Alpaca model and chat history database
     '''
     ## initialize
-    def __init__(self, AI_name = 'A', user_name = 'Q', intents = None, model_path = "./src/models/model.bin"):
+    def __init__(self, AI_name = 'A', user_name = 'Q', intents = None, sem_num = 1, model_path = "./src/models/model.bin"):
         super().__init__(intents=intents)
-        # set mutex
-        self._pool = concurrent.futures.ThreadPoolExecutor()
-        self.lock = threading.Lock()
+        # set semaphore
+        self.sem = asyncio.Semaphore(sem_num)
         # set AI name and default prompt
         self.AI_name = AI_name
         self.user_name = user_name
@@ -49,27 +47,24 @@ class AlpacaBot(discord.Client):
             await message.channel.send(f"- {self.user_name}:                       comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
-        task = asyncio.create_task(self.Alpaca_eval(message))
-        await asyncio.gather(task)
+        asyncio.to_thread(self.Alpaca_eval(message))
         return
     
     ## Alpaca model eval
     async def Alpaca_eval(self, message):
         # use mutex to prevent cpu overload
-        await asyncio.to_thread(self.lock.acquire)
+        async with self.sem:
         # loading chat history and set AI personality
-        prompt = ChatDatabase.load_chat_history(message.channel.id)
-        if not prompt:
-            prompt = self.personality
-        user_message = prompt+ "\n" + message.content + "\n" + f"{self.AI_name}: "
-        # eval
-        res = self.Alpaca.eval(user_message, self.AI_name, self.user_name)
-        # reply to channel
-        await message.channel.send(res)
-        # update chat history
-        ChatDatabase.update_chat_history(message.channel.id, user_message + res)
-        # release thread lock
-        self.lock.release()
+            prompt = ChatDatabase.load_chat_history(message.channel.id)
+            if not prompt:
+                prompt = self.personality
+            user_message = prompt+ "\n" + message.content + "\n" + f"{self.AI_name}: "
+            # eval
+            res = await asyncio.to_thread(self.Alpaca.eval(user_message, self.AI_name, self.user_name))
+            # reply to channel
+            await message.channel.send(res)
+            # update chat history
+            ChatDatabase.update_chat_history(message.channel.id, user_message + res)
         return
     
 if __name__ == "__main__":
