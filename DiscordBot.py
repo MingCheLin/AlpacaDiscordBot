@@ -1,5 +1,4 @@
 import asyncio
-import threading
 import discord
 import personality_state
 import ChatDatabase
@@ -47,12 +46,6 @@ class AlpacaBot(discord.Client):
             await message.channel.send(f"- {self.user_name}:                       comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
-        await asyncio.to_thread(self.Alpaca_eval(message))
-        return
-    
-    ## Alpaca model eval
-    async def Alpaca_eval(self, message):
-        # use mutex to prevent cpu overload
         async with self.sem:
         # loading chat history and set AI personality
             prompt = ChatDatabase.load_chat_history(message.channel.id)
@@ -60,11 +53,12 @@ class AlpacaBot(discord.Client):
                 prompt = self.personality
             user_message = prompt+ "\n" + message.content + "\n" + f"{self.AI_name}: "
             # eval
-            res = await asyncio.to_thread(self.Alpaca.eval(user_message, self.AI_name, self.user_name))
+            task = asyncio.to_thread(self.Alpaca.eval, user_message, self.AI_name, self.user_name)
+            res = await asyncio.gather(task)
             # reply to channel
-            await message.channel.send(res)
+            await message.channel.send(res[0])
             # update chat history
-            ChatDatabase.update_chat_history(message.channel.id, user_message + res)
+            ChatDatabase.update_chat_history(message.channel.id, user_message + res[0])
         return
     
 if __name__ == "__main__":
