@@ -34,8 +34,8 @@ enter:
 to run the bot.  
 
 
-## Roadmap
-1. Fix the discord api warning ``WARNING  discord.gateway Shard ID None heartbeat blocked for more than XX seconds.``  
+## Future work
+1. (Solved) Fix the discord api warning ``WARNING  discord.gateway Shard ID None heartbeat blocked for more than XX seconds.``  
 2. Tune the alpaca model parameter.  
 3. Make another multiprocess structure to handle multichannel request.  
 4. etc...  
