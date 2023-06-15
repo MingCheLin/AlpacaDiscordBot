@@ -47,7 +47,7 @@ class AlpacaBot(discord.Client):
             await message.channel.send(f"- {self.user_name}:                       comunicate with bot\n- {self.user_name}: reset               clear chat history")
             return
         # do alpaca model eval
-        asyncio.to_thread(self.Alpaca_eval(message))
+        await asyncio.to_thread(self.Alpaca_eval(message))
         return
     
     ## Alpaca model eval
