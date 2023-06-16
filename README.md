@@ -11,7 +11,7 @@ colab demo : [Colab-Alpaca discord bot](https://colab.research.google.com/drive/
 ### 1. Install discord.py and llama-cpp-python
 ``pip install llama-cpp-python discord.py``  
 ### 2. Get alpaca model
-For english user, please download the alpaca model from [Hugging face](https://huggingface.co/models?other=alpaca) and follow ![llama.cpp](https://github.com/ggerganov/llama.cpp#instruction-mode-with-alpaca) to quantize the model.  
+For english user, please download the alpaca model from [Hugging face](https://huggingface.co/models?other=alpaca) and follow [llama.cpp](https://github.com/ggerganov/llama.cpp#instruction-mode-with-alpaca) to quantize the model.  
 中文使用者可以使用[Chinese-LLaMA-Alpaca](https://github.com/ymcui/Chinese-LLaMA-Alpaca)來得到中文預訓練模型並將其量化為4 bits。  
 And put the model into ``./src/models/ ``   
 ### 3. Create discord bot
