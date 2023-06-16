@@ -1,3 +1,4 @@
+![image](https://github.com/MingCheLin/GPT-like_lighting_discord_bot___AlpacaDiscordBot/blob/main/DEMO.gif)
 # AlpacaDiscordBot
 This is a discord bot project that use Alpaca LLM to generate response to discord user. The main purpose is to provide a free, low hardware requirements discord client structure to everyone who want to host a GPT-like discord bot themselves. In this project, [llama.cpp](https://github.com/ggerganov/llama.cpp#instruction-mode-with-alpaca), [llama-cpp-python](https://github.com/abetlen/llama-cpp-python) and [discord.py](https://discordpy.readthedocs.io/en/stable/) are used.  
 And for chinese user, [Chinese-LLaMA-Alpaca](https://github.com/ymcui/Chinese-LLaMA-Alpaca) can be used to generate chinese Alpaca model.  
